@@ -31,62 +31,24 @@ let useUserStore = defineStore('User',{
             username: localStorage.getItem('username'),
             password: localStorage.getItem('password'),
             flag: '',
-            // 假的响应数据
-            result: {
-                code: '' as string | number,
-                data1: 0 as number,
-                routes: [] as string[],
-                token: '',
-            }
         }
     },
     actions: {
-        // 登录功能
-        /* 
-        超级
-            "username": "zhkuhzjxl"
-            "password": "123456",
-        校级
-            1234567
-        教室管理员
-            12345678
-        */  
         async userLogin(data:loginRequestData) {
             this.username = data.username
             this.password = data.password
             localStorage.setItem('username',data.username)
             localStorage.setItem('password',data.password)
-            // let result:loginResponseData = await reqLogin(data)
-            // console.log(result)
-            if(data.username == 'zhkuhzjxl' && data.password == '123456') {
-                this.result = {
-                    code: 200,
-                    data1: 0,// 0:超级管理员，1:校级管理员，2:楼栋管理员
-                    routes: ['schoolAdmin','schoolInformation'],
-                    token: '123123sdasdwqadas'
-                }
-            }else if(data.username == 'zhkuhzjxl' && data.password == '1234567') {
-                this.result = {
-                    code: 200,
-                    data1: 1,
-                    routes: ['buildingAdmin','buildingInformation'],
-                    token: '123123sdasdwasdasadas'
-                }
-            }else if(data.username == 'zhkuhzjxl' && data.password == '12345678') {
-                this.result = {
-                    code: 200,
-                    data1: 2,
-                    routes: ['classInformation'],
-                    token: '123123sdasdwqweqqwewqadas'
-                }
-            }
-            if(this.result.code == 200) {
-                this.token = this.result.token
-                this.role = JSON.stringify(this.result.data1)
-                this.routes = JSON.stringify(this.result.routes)
-                SET_TOKEN(this.result.token)
-                localStorage.setItem('role',JSON.stringify(this.result.data1))
-                localStorage.setItem('routes',JSON.stringify(this.result.routes))
+            let result:loginResponseData = await reqLogin(data)
+            console.log(result)
+
+            if(result.code == 200) {
+                this.token = result.data1.token
+                this.role = JSON.stringify(result.data1.level)
+                this.routes = JSON.stringify(result.routes)
+                SET_TOKEN(result.data1.token)
+                localStorage.setItem('role',JSON.stringify(result.data1.level))
+                localStorage.setItem('routes',JSON.stringify(result.routes))
 
                 this.handleAsyncRoute(this.routes)
 
@@ -100,7 +62,7 @@ let useUserStore = defineStore('User',{
 
                 return 'ok'
             }else {
-                return Promise.reject(new Error('登录失败'))
+                return Promise.reject(new Error('登陆失败'))
             }
         },
         async userlogOut() {

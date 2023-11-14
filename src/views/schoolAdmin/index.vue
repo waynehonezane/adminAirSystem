@@ -43,8 +43,9 @@
 
 <script setup lang='ts'>
 import { ref } from 'vue'
+import useSchoolAdminStore from '@/store/modules/schoolAdmin'
 
-
+const schoolAdminStore = useSchoolAdminStore()
 const pageSize4 = ref(10)
 const currentPage4 = ref(1)
 
