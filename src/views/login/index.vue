@@ -43,7 +43,7 @@ import {ElNotification} from 'element-plus'
 import { useRouter } from 'vue-router';
 
 const userStore = useUserStore()
-let loginForm = reactive({username:'zhkuhzjxl',password:'123456'})
+let loginForm = reactive({username:'test',password:'123456'})
 let ruleFormRef = ref()
 let $router = useRouter()
 
@@ -61,10 +61,10 @@ const login = async ()=>{
 }
 
 const validateUsername = (rule:any, value:any, callback:any)=>{
-    if(value.length >= 5) {
+    if(value.length >= 3) {
         callback()
     }else {
-        callback(new Error('账号长度至少5位'))
+        callback(new Error('账号长度至少3位'))
     }
 }
 

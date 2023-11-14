@@ -8,9 +8,14 @@ export interface loginRequestData {
     username: string
 }
 
+export interface data1 {
+    level: number,
+    token: string
+}
+
 export interface loginResponseData extends responseData {
-    data1: number,
-    data2: null
+    data1: data1,
+    routes: string[]
 }
 
 export interface logoutResponseData extends responseData {
