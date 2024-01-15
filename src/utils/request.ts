@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import useUserStore from '@/store/modules/user'
 
 let request = axios.create({
     baseURL: 'http://47.120.4.5:8023',
@@ -7,18 +8,23 @@ let request = axios.create({
 })
 
 // 请求拦截器
-request.interceptors.request.use((config)=>{
+request.interceptors.request.use((config) => {
+    let userStore = useUserStore()
+    let token = userStore.token
 
+    if (token) {
+        config.headers["token"] = token
+    }
 
     return config
 })
 
 // 响应拦截器
-request.interceptors.response.use((response)=>{
+request.interceptors.response.use((response) => {
     // 成功的回调
 
     return response.data
-},(error)=>{
+}, (error) => {
     // 失败的回调
     let status = error.response.status
     let message = ''

@@ -27,9 +27,7 @@
             v-model:current-page="currentPage4"
             v-model:page-size="pageSize4"
             :page-sizes="[100, 200, 300, 400]"
-            :small="small"
-            :disabled="disabled"
-            :background="background"
+            :background="true"
             layout="prev, pager, next, jumper, ->, sizes, total"
             :total="400"
             @size-change="handleSizeChange"
@@ -40,10 +38,15 @@
 </template>
 
 <script setup lang='ts'>
-import {ref} from 'vue'
+import { ref,onMounted } from 'vue'
+import { reqClassInformation } from '@/api/juniorAdmin'
 
 const pageSize4 = ref(10)
 const currentPage4 = ref(1)
+
+onMounted(()=>{
+    getHasClass()
+})
 
 let schoolAdmin = ref([
     {
@@ -81,6 +84,12 @@ let schoolAdmin = ref([
     },
 ])
 
+const getHasClass = async ()=>{
+    const result = await reqClassInformation(1,1)
+    console.log(result)
+}
+
+// 圆角样式
 const customHeaderCellStyle = ({row, column, rowIndex, columnIndex})=>{
     if(columnIndex === 0) {
         return {
@@ -103,6 +112,7 @@ const customHeaderCellStyle = ({row, column, rowIndex, columnIndex})=>{
         }
     }
 }
+
 
 </script>
 
