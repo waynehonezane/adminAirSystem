@@ -34,21 +34,33 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination v-model:current-page="currentPage4" v-model:page-size="pageSize4" :page-sizes="[100, 200, 300, 400]"
-            :small="small" :disabled="disabled" :background="background"
-            layout="prev, pager, next, jumper, ->, sizes, total" :total="400" @size-change="handleSizeChange"
-            @current-change="handleCurrentChange" class="pagination" />
+        <el-pagination 
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize" 
+        :page-sizes="[10, 20, 30, 40]"
+        layout="prev, pager, next, jumper, ->, sizes, total"
+        :total="total" 
+        @current-change="handleCurrentPage" 
+        @size-change="handlePageSize"
+        class="pagination" />
     </div>
 </template>
 
 <script setup lang='ts'>
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import useSchoolAdminStore from '@/store/modules/schoolAdmin'
+import { reqAdminInformation } from '@/api/schoolAdmin'
 
 const schoolAdminStore = useSchoolAdminStore()
-const pageSize4 = ref(10)
-const currentPage4 = ref(1)
+let currentPage = ref<number>(1)
+let pageSize = ref<number>(10)
+let total = ref<number>(30)
 
+onMounted(()=>{
+    getHasAdmin()
+})
+
+// table表格依赖的数据
 let schoolAdmin = ref([
     {
         name: 'admin1',
@@ -79,7 +91,23 @@ let schoolAdmin = ref([
         school: '仲恺大学'
     }
 ])
+const getHasAdmin = async ()=>{
+    console.log(currentPage.value)
+    let result = await reqAdminInformation(currentPage.value)
+    console.log(result)
+}
 
+// 当前页数发生改变时触发
+const handleCurrentPage = ()=>{
+    getHasAdmin()
+}
+
+// 每页条数发生改变时触发
+const handlePageSize = ()=>{
+
+}
+
+// 圆角样式
 const customHeaderCellStyle = ({ row, column, rowIndex, columnIndex }) => {
     if (columnIndex === 0) {
         return {

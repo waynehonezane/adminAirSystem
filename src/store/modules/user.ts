@@ -25,7 +25,7 @@ let useUserStore = defineStore('User',{
     state: ()=>{
         return {
             menuRoutes: constantRouter,
-            token: GET_TOKEN(),
+            token: GET_TOKEN() || '',
             role: localStorage.getItem('role') || '',
             routes: JSON.parse(localStorage.getItem('routes') || '[]'),
             username: localStorage.getItem('username'),
@@ -40,7 +40,6 @@ let useUserStore = defineStore('User',{
             localStorage.setItem('username',data.username)
             localStorage.setItem('password',data.password)
             let result:loginResponseData = await reqLogin(data)
-            console.log(result)
 
             if(result.code == 200) {
                 this.token = result.data1.token
@@ -67,7 +66,6 @@ let useUserStore = defineStore('User',{
         },
         async userlogOut() {
             let result = await reqLogout()
-            console.log(result)
             if(result.code == 200) {
                 this.token = ''
                 this.role = ''
