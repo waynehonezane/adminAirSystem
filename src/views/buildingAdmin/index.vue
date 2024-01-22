@@ -15,13 +15,6 @@
                     <span>3</span>
                 </div>
             </div>
-            <div class="schoolQuantity" style="background-color: #53BD58;"> 
-                <svgIcon :name="'class'" :width="'50px'" :height="'50px'"></svgIcon>
-                <div class="quantityInformation">
-                    <span>楼栋总数</span>
-                    <span>3</span>
-                </div>
-            </div>
         </div>
         <div class="button">
             <el-button type="primary">录入楼栋管理员信息</el-button>
