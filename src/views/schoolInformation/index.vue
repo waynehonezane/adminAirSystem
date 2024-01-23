@@ -17,62 +17,164 @@
             </div>
         </div>
         <div class="button">
-            <el-button type="primary">录入学校信息</el-button>
-            <el-button type="primary">下载模板</el-button>
+            <el-button type="primary" @click="addSchool">录入学校信息</el-button>
         </div>
     </div>
     <div class="header">
-            <el-table style="margin:10px 0px 10px 0px;" :data="schoolAdmin" :header-cell-style="customHeaderCellStyle">
+            <el-table style="margin:10px 0px 10px 0px;" :data="schoolInformation" :header-cell-style="customHeaderCellStyle">
                 <el-table-column label="序号" type="index"></el-table-column>
                 <el-table-column label="学校名称" prop="schoolName"></el-table-column>
                 <el-table-column label="校区" prop="campus"></el-table-column>
                 <el-table-column label="对应地理位置" prop="location"></el-table-column>
                 <el-table-column label="操作">
                     <template #="{row,$index}">
+                        <el-button type="primary">编辑</el-button>
                         <el-button type="danger">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <el-pagination
-            v-model:current-page="currentPage4"
-            v-model:page-size="pageSize4"
-            :page-sizes="[100, 200, 300, 400]"
-            :small="small" 
-            :disabled="disabled"
-            :background="background"
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            :page-sizes="[9]"
             layout="prev, pager, next, jumper, ->, sizes, total"
             :total="400"
-            @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
             class="pagination"
             />
+            <el-dialog v-model="dialogVisible" :title="formData.schoolCode?'更新学校信息':'录入学校信息'">
+                <el-form :model="formData" :rules="rules" ref="form">
+                    <el-form-item label="学校名称" prop="schoolName">
+                        <el-input v-model="formData.schoolName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="校区" prop="campusName">
+                        <el-input v-model="formData.campusName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="对应地理位置" prop="location">
+                        <el-input v-model="formData.location"></el-input>
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取消</el-button>
+                    <el-button type="primary" @click="save">确定</el-button>
+                </span>
+                </template>
+            </el-dialog>
     </div>
 </template>
 
 <script setup lang='ts'>
-import {ref} from 'vue'
+import { ref,reactive,onMounted,nextTick } from 'vue'
+import { reqSchoolInfomation,reqAddOrUpdateSchool } from '@/api/schoolAdmin'
+import type { responseSchoolData,hasSchoolData,addOrUpdateSchoolObj } from '@/api/schoolAdmin/type'
+import { ElMessage } from 'element-plus';
 
-const pageSize4 = ref(10)
-const currentPage4 = ref(1)
+const currentPage = ref(1)
+const pageSize = ref(9)
+let dialogVisible = ref<boolean>(false)
+let form = ref()
+let formData = reactive<addOrUpdateSchoolObj>({
+    campusName: '',
+    location: '',
+    schoolCode: '',
+    schoolName: ''
+})
+let formDataArr = ref<addOrUpdateSchoolObj[]>([])
 
-let schoolAdmin = ref([
-    {
-        schoolName: '仲恺农业工程学院',
-        campus: '海珠校区',
-        location: '广州海珠',
-    },
-    {
-        schoolName: '仲恺农业工程学院',
-        campus: '白云校区',
-        location: '广州白云',
-    },
-    {
-        schoolName: '中山大学',
-        campus: '大学城校区',
-        location: '广州番禺',
+onMounted(()=>{
+    getHasSchool()
+})
+
+let schoolInformation = ref<hasSchoolData[]>([])
+// 获取已有的学校信息
+const getHasSchool = async ()=>{
+    let result: responseSchoolData = await reqSchoolInfomation(currentPage.value)
+    console.log(result)
+    schoolInformation.value = result.data1
+}
+
+// 添加已有的学校
+const addSchool = ()=>{
+    // 表单数据初始化
+    Object.assign(formData,{
+        campusName: '',
+        location: '',
+        schoolCode: '',
+        schoolName: ''
+    })
+    formDataArr.value = []
+    // 清空表单校验规则
+    nextTick(()=>{
+        form.value.clearValidate('schoolName')
+        form.value.clearValidate('campusName')
+        form.value.clearValidate('location')
+    })
+    dialogVisible.value = true
+}
+
+const save = async ()=>{
+    await form.value.validate()
+    formDataArr.value.push(formData)
+    console.log(formDataArr.value)
+    let result: any = await reqAddOrUpdateSchool(formDataArr.value)
+    console.log(result)
+    if(result.code == 200) {
+        ElMessage({
+            type: 'success',
+            message: formData.schoolCode ? '更新成功' : '录入成功'
+        })
+        getHasSchool()
+    }else {
+        ElMessage({
+            type: 'error',
+            message: formData.schoolCode ? '更新失败' : '录入失败'
+        })
     }
-])
+    dialogVisible.value = false
+}
 
+// 当前页数发生改变的回调
+const handleCurrentChange = ()=>{
+    getHasSchool()
+}
+
+// 每页条数发生改变的回调
+const handleSizeChange = ()=>{
+
+}
+
+const validatorSchoolName = (rules: any, value: any, callback: any) => {
+    if(value.trim().length > 0) {
+        callback()
+    }else {
+        callback(new Error('学校不能为空'))
+    }
+}
+const validatorCampusName = (rules: any, value: any, callback: any) => {
+    if(value.trim().length > 0) {
+        callback()
+    }else {
+        callback(new Error('校区不能为空'))
+    }
+}
+const validatorLocation = (rules: any, value: any, callback: any) => {
+    if(value.trim().length > 0) {
+        callback()
+    }else {
+        callback(new Error('地理位置不能为空'))
+    }
+}
+
+// 表单校验
+const rules = {
+    schoolName: [{required: true, trigger: 'blur', validator: validatorSchoolName}],
+    campusName: [{required: true, trigger: 'blur', validator: validatorCampusName}],
+    location: [{required: true, trigger: 'blur', validator: validatorLocation}]
+}
+
+// 圆角样式
 const customHeaderCellStyle = ({row, column, rowIndex, columnIndex})=>{
     if(columnIndex === 0) {
         return {
@@ -144,7 +246,7 @@ const customHeaderCellStyle = ({row, column, rowIndex, columnIndex})=>{
 .header {
     padding:10px 15px 15px 15px;
     box-sizing: border-box;
-    height: 75vh;
+    height: 77vh;
     margin-top: 10px;
     border-radius: 10px;
     background: #F7F7F7;

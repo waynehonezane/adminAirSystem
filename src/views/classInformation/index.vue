@@ -1,7 +1,16 @@
 <template>
-    <div class="contaner1">
+    <div class="container1">
+        <div class="information">
+            <div class="schoolQuantity" style="background-color: #53BD58;"> 
+                <svgIcon :name="'class'" :width="'50px'" :height="'50px'"></svgIcon>
+                <div class="quantityInformation">
+                    <span>教室总数</span>
+                    <span>3</span>
+                </div>
+            </div>
+        </div>
         <div class="button">
-            <el-button type="primary">录入教室信息</el-button>
+            <el-button type="primary">录入楼栋管理员信息</el-button>
             <el-button type="primary">下载模板</el-button>
         </div>
     </div>
@@ -117,17 +126,52 @@ const customHeaderCellStyle = ({row, column, rowIndex, columnIndex})=>{
 </script>
 
 <style scoped lang='scss'>
-.contaner1 {
+.container1 {
     display: flex;
-    flex-direction: row-reverse;
+    .information {
+    display: flex;
+    justify-content: space-around;
     align-items: center;
-    margin-right: 30px;
-    height: 40px;
+    width:75%;
+    height: 130px;
+    background: #FAF7F7;
+    box-shadow: 4px 4px 6px -3px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    .schoolQuantity {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 300px;
+        height: 100px;
+        border-radius: 10px;
+        background: #E8A23A;
+            .quantityInformation {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                color: #FFFFFF;
+                font-size: 22px;
+                span:nth-child(1) {
+                    margin-bottom: 10px;
+                }
+            }
+        }
+        .schoolAdmin {
+            width: 300px;
+            height: 100px;
+            border-radius: 10px;
+            background: #E87D7D;
+        }
+    }
+    .button {
+        margin: 0 auto;
+        margin-top: 90px;
+    }
 }
 .header {
     padding:10px 15px 15px 15px;
     box-sizing: border-box;
-    height: 85vh;
+    height: 75vh;
     margin-top: 10px;
     border-radius: 10px;
     background: #F7F7F7;

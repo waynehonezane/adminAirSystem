@@ -1,17 +1,11 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 
-const useSchoolAdminStore = defineStore('schoolAdmin',{
-    state() {
-        return {
-
-        }
-    },
-    actions: {
-
-    },
-    getters: {
-
-    }
+const useSchoolAdminStore = defineStore('schoolAdmin', {
+  state() {
+    return {}
+  },
+  actions: {},
+  getters: {},
 })
 
-export default useSchoolAdminStore;
+export default useSchoolAdminStore
