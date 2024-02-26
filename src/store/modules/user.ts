@@ -1,7 +1,6 @@
-// @ts-expect-error
 import cloneDeep from 'lodash/cloneDeep'
 import { defineStore } from 'pinia'
-import { reqLogin, reqLogout } from '@/api/user'
+import { reqLogin, reqLogout,reqSuperInformation,reqGeneralInformation,reqJuniorInformation } from '@/api/user'
 import { constantRouter, asyncRouter, anyRouter } from '@/router/routers'
 import type { loginRequestData, loginResponseData } from '@/api/user/type'
 import router from '@/router'
@@ -30,6 +29,8 @@ const useUserStore = defineStore('User', {
       username: localStorage.getItem('username'),
       password: localStorage.getItem('password'),
       flag: '',
+      adminNum: 0,
+      schoolNum: 0
     }
   },
   actions: {
@@ -92,6 +93,25 @@ const useUserStore = defineStore('User', {
       this.flag = this.role
       return 'ok'
     },
+    // 获取超级管理员信息
+    async superInformation() {
+      let result = await reqSuperInformation()
+      if(result.code == 200) {
+        this.adminNum = result.data1.genAdmNum
+        this.schoolNum = result.data1.schoolNum
+      }
+      console.log(result)
+    },
+    // 获取中级管理员信息
+    async generalInformation() {
+      let result = await reqGeneralInformation()
+      console.log(result)
+    },
+    // 获取初级管理员信息
+    async juniorInformation() {
+      let result = await reqJuniorInformation()
+      console.log(result)
+    }
   },
   getters: {},
 })

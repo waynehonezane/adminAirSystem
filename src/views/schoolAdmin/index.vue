@@ -5,14 +5,14 @@
                 <svgIcon :name="'school'" :width="'50px'" :height="'50px'"></svgIcon>
                 <div class="quantityInformation">
                     <span>学校总数</span>
-                    <span>3</span>
+                    <span>{{ userStore.schoolNum }}</span>
                 </div>
             </div>
             <div class="schoolQuantity" style="background-color: #E87D7D;">
                 <svgIcon :name="'my'" :width="'50px'" :height="'50px'"></svgIcon>
                 <div class="quantityInformation">
                     <span>校级管理员总数</span>
-                    <span>3</span>
+                    <span>{{ userStore.adminNum }}</span>
                 </div>
             </div>
         </div>
@@ -101,12 +101,14 @@
 
 <script setup lang='ts'>
 import { ref, reactive, onMounted, nextTick } from 'vue'
-import useSchoolAdminStore from '@/store/modules/schoolAdmin'
-import { reqAdminInformation, reqSchoolInfomation, reqAddAdminInformation, reqDeleteAdmin,reqUpdateAdmin } from '@/api/schoolAdmin'
-import type { adminData, arrayData, reqAddAdminData, responseSchoolData, updateAdminData } from '@/api/schoolAdmin/type'
-import { ElMessage } from 'element-plus';
+import { reqAdminInformation, reqAddAdminInformation, reqDeleteAdmin,reqUpdateAdmin } from '@/api/schoolAdmin'
+import { reqSchoolInfomation } from '@/api/schoolInformation'
+import type { adminData, arrayData, reqAddAdminData, updateAdminData } from '@/api/schoolAdmin/type'
+import type { responseSchoolData } from '@/api/schoolInformation/type'
+import { ElMessage } from 'element-plus'
+import useUserStore from '@/store/modules/user'
 
-const schoolAdminStore = useSchoolAdminStore()
+const userStore = useUserStore()
 let currentPage = ref<number>(1)
 let pageSize = ref<number>(9)
 let total = ref<number>(30)

@@ -95,7 +95,6 @@ let schoolAdmin = ref([
 
 const getHasClass = async ()=>{
     const result = await reqClassInformation(1,1)
-    console.log(result)
 }
 
 // 圆角样式

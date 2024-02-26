@@ -9,6 +9,7 @@ import router from './router/index.ts'
 import './permission.ts'
 import 'virtual:svg-icons-register'
 
+// axios.defaults.withCredentials = true
 const app = createApp(App)
 
 app.use(ElementPlus)

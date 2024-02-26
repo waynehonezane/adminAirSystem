@@ -5,14 +5,14 @@
                 <svgIcon :name="'school'" :width="'50px'" :height="'50px'"></svgIcon>
                 <div class="quantityInformation">
                     <span>学校总数</span>
-                    <span>3</span>
+                    <span>{{ userStore.schoolNum }}</span>
                 </div>
             </div>
             <div class="schoolQuantity" style="background-color: #E87D7D;">
                 <svgIcon :name="'my'" :width="'50px'" :height="'50px'"></svgIcon>
                 <div class="quantityInformation">
                     <span>校级管理员总数</span>
-                    <span>3</span>
+                    <span>{{ userStore.adminNum }}</span>
                 </div>
             </div>
         </div>
@@ -29,7 +29,11 @@
                 <el-table-column label="操作">
                     <template #="{row,$index}">
                         <el-button type="primary">编辑</el-button>
-                        <el-button type="danger">删除</el-button>
+                        <el-popconfirm title="确定要删除吗?" @confirm="removeSchool(row)">
+                            <template #reference>
+                                <el-button type="danger">删除</el-button>
+                            </template>
+                        </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
@@ -43,7 +47,8 @@
             @size-change="handleSizeChange"
             class="pagination"
             />
-            <el-dialog v-model="dialogVisible" :title="formData.schoolCode?'更新学校信息':'录入学校信息'">
+            <!-- 添加的dialog -->
+            <el-dialog v-model="dialogVisible" title="录入学校信息">
                 <el-form :model="formData" :rules="rules" ref="form">
                     <el-form-item label="学校名称" prop="schoolName">
                         <el-input v-model="formData.schoolName"></el-input>
@@ -54,6 +59,9 @@
                     <el-form-item label="对应地理位置" prop="location">
                         <el-input v-model="formData.location"></el-input>
                     </el-form-item>
+                    <el-form-item label="学校编码" prop="schoolCode">
+                        <el-input v-model="formData.schoolCode"></el-input>
+                    </el-form-item>
                 </el-form>
                 <template #footer>
                 <span class="dialog-footer">
@@ -62,40 +70,49 @@
                 </span>
                 </template>
             </el-dialog>
+            <!-- 修改的dialog -->
+            <el-dialog v-model="updateDialog" title="更改学校信息">
+                <el-form :model="updateForm">
+                    <el-form-item></el-form-item>
+                </el-form>
+            </el-dialog>
     </div>
 </template>
 
 <script setup lang='ts'>
 import { ref,reactive,onMounted,nextTick } from 'vue'
-import { reqSchoolInfomation,reqAddOrUpdateSchool } from '@/api/schoolAdmin'
-import type { responseSchoolData,hasSchoolData,addOrUpdateSchoolObj } from '@/api/schoolAdmin/type'
-import { ElMessage } from 'element-plus';
+import { reqSchoolInfomation,reqAddSchool,reqRemoveSchool } from '@/api/schoolInformation'
+import type { responseSchoolData,hasSchoolData,addSchoolObj,reqAddSchoolData,reqRemoveData } from '@/api/schoolInformation/type'
+import { ElMessage } from 'element-plus'
+import useUserStore from '@/store/modules/user'
 
 const currentPage = ref(1)
 const pageSize = ref(9)
+const userStore = useUserStore()
 let dialogVisible = ref<boolean>(false)
+let updateDialog = ref<boolean>(false)
 let form = ref()
-let formData = reactive<addOrUpdateSchoolObj>({
-    campusName: '',
-    location: '',
-    schoolCode: '',
-    schoolName: ''
-})
-let formDataArr = ref<addOrUpdateSchoolObj[]>([])
 
 onMounted(()=>{
     getHasSchool()
 })
 
-let schoolInformation = ref<hasSchoolData[]>([])
 // 获取已有的学校信息
+let schoolInformation = ref<hasSchoolData[]>([])
 const getHasSchool = async ()=>{
     let result: responseSchoolData = await reqSchoolInfomation(currentPage.value)
-    console.log(result)
     schoolInformation.value = result.data1
 }
 
 // 添加已有的学校
+// #region
+let formData = reactive<addSchoolObj>({
+    campusName: '',
+    location: '',
+    schoolCode: '',
+    schoolName: ''
+})
+let formDataArr = ref<reqAddSchoolData>([])
 const addSchool = ()=>{
     // 表单数据初始化
     Object.assign(formData,{
@@ -110,6 +127,7 @@ const addSchool = ()=>{
         form.value.clearValidate('schoolName')
         form.value.clearValidate('campusName')
         form.value.clearValidate('location')
+        form.value.clearValidate('schoolCode')
     })
     dialogVisible.value = true
 }
@@ -117,23 +135,58 @@ const addSchool = ()=>{
 const save = async ()=>{
     await form.value.validate()
     formDataArr.value.push(formData)
-    console.log(formDataArr.value)
-    let result: any = await reqAddOrUpdateSchool(formDataArr.value)
-    console.log(result)
+    let result: any = await reqAddSchool(formDataArr.value)
     if(result.code == 200) {
         ElMessage({
             type: 'success',
-            message: formData.schoolCode ? '更新成功' : '录入成功'
+            message: '录入成功'
         })
         getHasSchool()
     }else {
         ElMessage({
             type: 'error',
-            message: formData.schoolCode ? '更新失败' : '录入失败'
+            message: '录入失败'
         })
     }
     dialogVisible.value = false
 }
+// #endregion
+
+// 删除已有的学校 !!!
+// #region
+let delAdminDTO = reactive<any>({
+    campus: '',
+    campusId: 0,
+    schoolId: 0,
+    schoolName: ''
+})
+const removeSchool = async (row: any)=>{
+    Object.assign(delAdminDTO,{
+        campus: row.campus,
+        campusId: row.campusId,
+        schoolId: row.schoolId,
+        schoolName: row.schoolName
+    })
+    let result = await reqRemoveSchool(delAdminDTO)
+    if(result.code == 200) {
+        ElMessage({
+            type: "success",
+            message: "删除成功"
+        })
+        getHasSchool()
+    }else {
+        ElMessage({
+            type: "error",
+            message: "删除失败"
+        })
+    }
+}
+// #endregion
+
+// 修改已有的学校
+let updateForm = reactive({
+
+})
 
 // 当前页数发生改变的回调
 const handleCurrentChange = ()=>{
@@ -166,12 +219,20 @@ const validatorLocation = (rules: any, value: any, callback: any) => {
         callback(new Error('地理位置不能为空'))
     }
 }
+const validatorSchoolCode = (rules: any, value: any, callback: any) => {
+    if(value.trim().length > 0) {
+        callback()
+    }else {
+        callback(new Error('学校编码不能为空'))
+    }
+}
 
 // 表单校验
 const rules = {
     schoolName: [{required: true, trigger: 'blur', validator: validatorSchoolName}],
     campusName: [{required: true, trigger: 'blur', validator: validatorCampusName}],
-    location: [{required: true, trigger: 'blur', validator: validatorLocation}]
+    location: [{required: true, trigger: 'blur', validator: validatorLocation}],
+    schoolCode: [{required: true, trigger: 'blur', validator: validatorSchoolCode}]
 }
 
 // 圆角样式
