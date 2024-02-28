@@ -44,7 +44,7 @@ request.interceptors.response.use(
         message = '请求地址错误'
         break
       case 500:
-        message = '登录失效,请重新登录'
+        message = '500'
         break
       default:
         message = '网络出现错误'
@@ -54,14 +54,14 @@ request.interceptors.response.use(
       type: 'error',
       message,
     })
-    if (status === 500) {
-      localStorage.removeItem('role')
-      localStorage.removeItem('routes')
-      localStorage.removeItem('TOKEN')
-      const $router = useRouter()
-      $router.push('/login')
-      window.location.reload()
-    }
+    // if (status === 500) {
+    //   localStorage.removeItem('role')
+    //   localStorage.removeItem('routes')
+    //   localStorage.removeItem('TOKEN')
+    //   const $router = useRouter()
+    //   $router.push('/login')
+    //   window.location.reload()
+    // }
 
     return Promise.reject(error)
   },

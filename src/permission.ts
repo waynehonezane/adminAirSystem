@@ -1,5 +1,4 @@
 import router from '@/router'
-// @ts-expect-error
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 import pinia from './store'
@@ -9,6 +8,13 @@ const userStore = useUserStore(pinia)
 
 router.beforeEach(async (to, from, next) => {
   nprogress.start()
+  if(userStore.role === '0') {
+    userStore.superInformation()
+  }else if(userStore.role === '1') {
+    userStore.generalInformation()
+  }else if(userStore.role === '2') {
+    userStore.juniorInformation()
+  }
 
   if (userStore.token) {
     if (to.path == '/login') {

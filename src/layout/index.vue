@@ -42,11 +42,11 @@
 import Menu from './menu/index.vue'
 import { useRouter } from 'vue-router';
 import useUserStore from '@/store/modules/user'
+import { ref,onMounted } from 'vue'
 import { ElNotification } from 'element-plus';
 
 let $router = useRouter()
 let userStore = useUserStore()
-
 
 const logOut = async ()=>{
     try {

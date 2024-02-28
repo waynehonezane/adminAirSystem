@@ -25,25 +25,6 @@ export interface reqAddAdminData {
   username: string,
 }
 
-export interface hasSchoolData {
-    campus: string,
-    campusId: number,
-    location: string,
-    schoolId: number,
-    schoolName: string
-}
-
-export interface responseSchoolData extends responseData {
-    data1: hasSchoolData[],
-}
-
-export interface addOrUpdateSchoolObj {
-    campusName: string,
-    location: string,
-    schoolCode: string,
-    schoolName: string
-}
-
 export interface updateAdminData {
   adminId: number,
   campusId: string | number,
