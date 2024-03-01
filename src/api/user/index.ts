@@ -11,4 +11,5 @@ enum API {
 export const reqLogin = (data: loginRequestData) =>
   request.post<any, loginResponseData>(API.LOGIN_URL, data)
 
+
 export const reqLogout = () => request.post<any, any>(API.LOGOUT_URL)

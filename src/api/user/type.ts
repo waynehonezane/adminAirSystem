@@ -11,6 +11,7 @@ export interface loginRequestData {
 export interface data1 {
   level: number
   token: string
+  buildingId: number
 }
 
 export interface loginResponseData extends responseData {

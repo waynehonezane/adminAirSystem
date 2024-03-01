@@ -7,6 +7,7 @@ import type { loginRequestData, loginResponseData } from '@/api/user/type'
 import router from '@/router'
 import { GET_TOKEN, SET_TOKEN } from '@/utils/token'
 import pinia from '@/store'
+import { da } from 'element-plus/es/locales.mjs'
 
 // 过滤用户需要展示的异步路由
 const filterAsyncRoute = (asyncRoute: any, userRoute: any) => {
@@ -30,6 +31,7 @@ const useUserStore = defineStore('User', {
       username: localStorage.getItem('username'),
       password: localStorage.getItem('password'),
       flag: '',
+      buildingId:localStorage.getItem('buildingId') || ''
     }
   },
   actions: {
@@ -39,14 +41,18 @@ const useUserStore = defineStore('User', {
       localStorage.setItem('username', data.username)
       localStorage.setItem('password', data.password)
       const result: loginResponseData = await reqLogin(data)
+      
+      console.log(result)
 
       if (result.code == 200) {
         this.token = result.data1.token
         this.role = JSON.stringify(result.data1.level)
         this.routes = JSON.stringify(result.routes)
+        this.buildingId = JSON.stringify(result.data1.buildingId)
         SET_TOKEN(result.data1.token)
         localStorage.setItem('role', JSON.stringify(result.data1.level))
         localStorage.setItem('routes', JSON.stringify(result.routes))
+        
 
         this.handleAsyncRoute(this.routes)
 
@@ -55,6 +61,7 @@ const useUserStore = defineStore('User', {
         } else if (this.role === '1') {
           return '/buildingAdmin1/buildingAdmin'
         } else if (this.role === '2') {
+          localStorage.setItem('buildingId',JSON.stringify(result.data1.buildingId))
           return '/classInformation1/classInformation'
         }
 
@@ -69,9 +76,11 @@ const useUserStore = defineStore('User', {
         this.token = ''
         this.role = ''
         this.routes = []
+        this.buildingId = ''
         localStorage.removeItem('TOKEN')
         localStorage.removeItem('role')
         localStorage.removeItem('routes')
+        localStorage.removeItem('buildingId')
         return 'ok'
       } else {
         return Promise.reject(new Error('登出失败'))
