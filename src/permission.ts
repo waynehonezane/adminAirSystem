@@ -18,7 +18,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (userStore.token) {
     if (to.path == '/login') {
-      userStore.handleAsyncRoute(userStore.routes)
+      // userStore.handleAsyncRoute(userStore.routes)
       if (userStore.role === '0') {
         next({ path: '/schoolAdmin1/schoolAdmin' })
       } else if (userStore.role === '1') {

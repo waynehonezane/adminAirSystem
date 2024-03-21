@@ -28,7 +28,6 @@
                 <el-table-column label="对应地理位置" prop="location"></el-table-column>
                 <el-table-column label="操作">
                     <template #="{row,$index}">
-                        <el-button type="primary">编辑</el-button>
                         <el-popconfirm title="确定要删除吗?" @confirm="removeSchool(row)">
                             <template #reference>
                                 <el-button type="danger">删除</el-button>
@@ -69,12 +68,6 @@
                     <el-button type="primary" @click="save">确定</el-button>
                 </span>
                 </template>
-            </el-dialog>
-            <!-- 修改的dialog -->
-            <el-dialog v-model="updateDialog" title="更改学校信息">
-                <el-form :model="updateForm">
-                    <el-form-item></el-form-item>
-                </el-form>
             </el-dialog>
     </div>
 </template>
@@ -152,7 +145,7 @@ const save = async ()=>{
 }
 // #endregion
 
-// 删除已有的学校 !!!
+// 删除已有的学校 
 // #region
 let delAdminDTO = reactive<any>({
     campus: '',
@@ -183,10 +176,6 @@ const removeSchool = async (row: any)=>{
 }
 // #endregion
 
-// 修改已有的学校
-let updateForm = reactive({
-
-})
 
 // 当前页数发生改变的回调
 const handleCurrentChange = ()=>{

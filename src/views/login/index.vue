@@ -33,7 +33,6 @@
             </el-card>
         </div>  
     </div>
-
 </template>
 
 <script setup lang='ts'>

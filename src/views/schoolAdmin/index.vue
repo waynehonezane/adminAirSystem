@@ -195,7 +195,7 @@ const addSave = async () => {
 }
 // #endregion
 
-// 删除校级管理员功能 !!!
+// 删除校级管理员功能
 // #region
 let delAdminData = reactive<any>({
     adminId: 0
