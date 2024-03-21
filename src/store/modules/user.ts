@@ -26,8 +26,8 @@ const useUserStore = defineStore('User', {
       token: GET_TOKEN() || '',
       role: localStorage.getItem('role') || '',
       routes: JSON.parse(localStorage.getItem('routes') || '[]'),
-      username: localStorage.getItem('username'),
-      password: localStorage.getItem('password'),
+      // username: localStorage.getItem('username'),
+      // password: localStorage.getItem('password'),
       flag: '',
       adminNum: 0,
       schoolNum: 0
@@ -35,11 +35,12 @@ const useUserStore = defineStore('User', {
   },
   actions: {
     async userLogin(data: loginRequestData) {
-      this.username = data.username
-      this.password = data.password
-      localStorage.setItem('username', data.username)
-      localStorage.setItem('password', data.password)
+      // this.username = data.username
+      // this.password = data.password
+      // localStorage.setItem('username', data.username)
+      // localStorage.setItem('password', data.password)
       const result: loginResponseData = await reqLogin(data)
+      console.log(result)
 
       if (result.code == 200) {
         this.token = result.data1.token
@@ -61,7 +62,7 @@ const useUserStore = defineStore('User', {
 
         return 'ok'
       } else {
-        return Promise.reject(new Error('登陆失败'))
+        return Promise.reject(new Error('登录失败'))
       }
     },
     async userlogOut() {
