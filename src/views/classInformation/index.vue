@@ -11,7 +11,7 @@
         </div>
         <div class="button">
             <el-button type="primary" @click="addClassroom">录入教室信息</el-button>
-            <el-button type="primary" @click="downloadClassroom()">下载模板</el-button>
+            <el-button type="primary" @click="downloadClassroom">下载模板</el-button>
         </div>
     </div>
     <div class="header">
@@ -76,11 +76,11 @@ import { reqClassInformation,reqJuniorAdminInformation,reqDeleteClassroomData,re
 import type { hasClassData, responseClassData,responseClassroomNumData,FileRaw } from '@/api/juniorAdmin/type'
 import useUserStore from '@/store/modules/user'
 import { ElMessage } from 'element-plus';
-const pageSize4 = ref(10)
+const pageSize4 = ref(8)
 const currentPage4 = ref(1)
 const UserStore = useUserStore()
 let classroomNum = ref(3)
-console.log(typeof (parseInt(UserStore.buildingId)))
+console.log("楼栋id",parseInt(UserStore.buildingId))
 let dialogVisible = ref<boolean>(false)
 let FileList = []
 let TemFilelist = reactive<FileRaw[]>([])
@@ -90,7 +90,7 @@ let classRoomInformation = ref<hasClassData[]>([])
 // 获取楼栋信息
 const getHasClass = async ()=>{
     let result:responseClassData = await reqClassInformation(parseInt(UserStore.buildingId),currentPage4.value)
-    console.log(result)
+    console.log("buildInfo",result)
     if (parseInt(UserStore.buildingId) == 1) {
         result.data1.forEach((item, index) => {
             //  console.log(index,item)
@@ -100,6 +100,7 @@ const getHasClass = async ()=>{
     }    
     // console.log(result.data1)
     classRoomInformation.value = result.data1
+    // classroomNum.value = result.data1.length
     // console.log(classRoomInformation.value)
     
 }
@@ -118,17 +119,18 @@ const reqClassroomNum = async() => {
 
 let delClassData = reactive<any>({
     buildingId: parseInt(UserStore.buildingId),
-    classroomName:'201'
+    classroomName:''
 })
 // 删除教室信息
 const deleteClass = async (row: any) => {
     let { classroomName } = row
+    console.log("classroomName",classroomName)
     let buildingId = parseInt(UserStore.buildingId)
     Object.assign(delClassData, {
         buildingId: buildingId,
         classroomName:classroomName
     })
-    console.log(delClassData)
+    console.log("删除的教室信息",delClassData)
     let result: any = await reqDeleteClassroomData(delClassData)
     console.log("删除教室信息", result)
     if (result.code == 200) {
@@ -178,7 +180,7 @@ const upload = async () => {
 // 下载模板
 const downloadClassroom = () => {
     reqDownloadClasssroom().then(res => {
-        // console.log(res)
+        console.log(res)
         const fileName = 'classroomInfoTemplate.xlsx'
         const url = window.URL.createObjectURL(new Blob([res]))
         const link = document.createElement('a')

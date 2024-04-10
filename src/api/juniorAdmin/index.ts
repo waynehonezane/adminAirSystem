@@ -1,6 +1,4 @@
 import request from '@/utils/request'
-import { addOrUpdateClassroomObj } from './type'
-import axios from 'axios'
 
 // 获取教室信息
 export const reqClassInformation = (buildingId: number, pageNum: number) =>
@@ -25,6 +23,6 @@ export const reqAddOrUpdateClass = (data: any) => request.post<any, any>(
 
 // 下载模板
 export const reqDownloadClasssroom = () => request.get<any,any>(
-  '/api/junior/classroomInfoTemplate'
+  '/api/junior/classroomInfoTemplate',{responseType:'blob'}
 )
 

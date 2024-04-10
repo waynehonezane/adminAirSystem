@@ -7,7 +7,7 @@ declare module 'vue-router' {
   }
 }
 
-// 常量路由
+// 常量路由(公共)
 export const constantRouter: Array<RouteRecordRaw> = [
   // 登录
   {
@@ -44,6 +44,7 @@ export const constantRouter: Array<RouteRecordRaw> = [
 // 异步路由
 export const asyncRouter: Array<RouteRecordRaw> = [
   // 超级管理员
+  // #region
   {
     path: '/schoolAdmin1',
     component: () => import('@/layout/index.vue'),
@@ -90,7 +91,9 @@ export const asyncRouter: Array<RouteRecordRaw> = [
       },
     ],
   },
+  // #endregion
   // 校级管理员
+  // #region
   {
     path: '/buildingAdmin1',
     component: () => import('@/layout/index.vue'),
@@ -137,6 +140,30 @@ export const asyncRouter: Array<RouteRecordRaw> = [
       },
     ],
   },
+  {
+    path: '/buildingChart1',
+    component: () => import('@/layout/index.vue'),
+    name: 'buildingChart',
+    redirect: '/buildingChart1/buildingChart',
+    meta: {
+      icon: '',
+      title: '',
+      hidden: false
+    },
+    children: [
+      {
+        path: '/buildingChart1/buildingChart',
+        component: () => import('@/views/buildingChart/index.vue'),
+        name: 'buildingChart',
+        meta: {
+          icon: 'Sunny',
+          title: '楼栋用电展示',
+          hidden: false
+        }
+      }
+    ]
+  },
+  // #endregion
   // 教室管理员
   {
     path: '/classInformation1',
@@ -161,6 +188,29 @@ export const asyncRouter: Array<RouteRecordRaw> = [
       },
     ],
   },
+  {
+    path: '/classChart1',
+    component: () => import('@/layout/index.vue'),
+    name: 'classChart',
+    redirect: '/classChart1/classChart',
+    meta: {
+      icon: '',
+      title: '',
+      hidden: false
+    },
+    children: [
+      {
+        path: '/classChart1/classChart',
+        component: () => import('@/views/classChart/index.vue'),
+        name: 'classChart',
+        meta: {
+          icon: 'Sunny',
+          title: '教室用电展示',
+          hidden: false
+        }
+      }
+    ]
+  }
 ]
 
 // 任意路由
