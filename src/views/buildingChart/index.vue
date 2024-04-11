@@ -31,5 +31,6 @@ import buildingEachMonthAllTime from '@/components/juniorCharts/buildingEachMont
         width: 100%;
         height: 33%;
     }
+
 }
 </style>
