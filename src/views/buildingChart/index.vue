@@ -1,44 +1,36 @@
 <template>
-    <div class="charts" ref="charts">
-        buildingChart
+    <div class="charts-layout">
+        <campusEachMonthAllTime class="charts1"/>
+        <campusAllBuildingThisMonthTime class="charts2"/>
+        <buildingEachMonthAllTime class="charts3"/>
     </div>
 </template>
 
-<script setup lang='ts'>
-import { ref, onMounted } from 'vue';
-import * as echarts from 'echarts';
-
-let charts = ref()
-
-onMounted(()=>{
-    let myCharts = echarts.init(charts.value)
-    myCharts.setOption({
-        title: {
-          text: 'ECharts 入门示例'
-        },
-        tooltip: {},
-        legend: {
-          data: ['销量']
-        },
-        xAxis: {
-          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
-        },
-        yAxis: {},
-        series: [
-          {
-            name: '销量',
-            type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
-          }
-        ]
-      })
-})
-
+<script setup lang='ts' name="buildingChart">
+import campusEachMonthAllTime from '@/components/juniorCharts/campusEachMonthAllTime/campusEachMonthAllTime.vue'
+import campusAllBuildingThisMonthTime from '@/components/juniorCharts/campusAllBuildingThisMonthTime/campusAllBuildingThisMonthTime.vue'
+import buildingEachMonthAllTime from '@/components/juniorCharts/buildingEachMonthAllTime/buildingEachMonthAllTime.vue'
 </script>
 
 <style scoped lang='scss'>
-.charts {
+.charts-layout{
     width: 100%;
-    height: 500px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    .charts1{
+        width: 100%;
+        height: 33%;
+    }
+    .charts2{
+        width: 100%;
+        height: 33%;
+    }
+    .charts3{
+        width: 100%;
+        height: 33%;
+    }
+
 }
 </style>

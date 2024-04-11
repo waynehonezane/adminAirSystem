@@ -13,6 +13,7 @@ const request = axios.create({
 request.interceptors.request.use((config) => {
   const userStore = useUserStore()
   const token = userStore.token
+  
 
   if (token) {
     config.headers['token'] = token
@@ -29,13 +30,16 @@ request.interceptors.response.use(
     return response.data
   },
   (error) => {
+    // console.log(error)
     // 失败的回调
     const status = error.response.status
     let message = ''
+    const router = useRouter()
 
     switch (status) {
       case 401:
         message = 'Token过期'
+        router.push('/login')  
         break
       case 403:
         message = '无权访问'

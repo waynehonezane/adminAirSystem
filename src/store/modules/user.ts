@@ -6,6 +6,7 @@ import type { loginRequestData, loginResponseData } from '@/api/user/type'
 import router from '@/router'
 import { GET_TOKEN, SET_TOKEN } from '@/utils/token'
 import pinia from '@/store'
+import { da } from 'element-plus/es/locales.mjs'
 
 // 过滤用户需要展示的异步路由
 const filterAsyncRoute = (asyncRoute: any, userRoute: any) => {
@@ -30,7 +31,13 @@ const useUserStore = defineStore('User', {
       // password: localStorage.getItem('password'),
       flag: '',
       adminNum: 0,
-      schoolNum: 0
+      schoolNum: 0,
+      buildingId: localStorage.getItem('buildingId') || '',
+      buildingName: localStorage.getItem('buildingName') || '',
+      campusId: 0,
+      adminId: 0,
+      buildingNum: 0,
+      junAdmNum:0
     }
   },
   actions: {
@@ -40,15 +47,21 @@ const useUserStore = defineStore('User', {
       // localStorage.setItem('username', data.username)
       // localStorage.setItem('password', data.password)
       const result: loginResponseData = await reqLogin(data)
-      console.log(result)
+      console.log("登录结果",result)
 
       if (result.code == 200) {
         this.token = result.data1.token
         this.role = JSON.stringify(result.data1.level)
         this.routes = JSON.stringify(result.routes)
+        this.buildingId = JSON.stringify(result.data1.buildingId)
+        this.campusId = result.data1.campusId
+        this.adminId = result.data1.adminId
         SET_TOKEN(result.data1.token)
         localStorage.setItem('role', JSON.stringify(result.data1.level))
         localStorage.setItem('routes', JSON.stringify(result.routes))
+        localStorage.setItem('buildingId', JSON.stringify(result.data1.buildingId))
+        localStorage.setItem('buildingName',JSON.stringify(result.data1.nickname))
+        
 
         this.handleAsyncRoute(this.routes)
 
@@ -57,6 +70,7 @@ const useUserStore = defineStore('User', {
         } else if (this.role === '1') {
           return '/buildingAdmin1/buildingAdmin'
         } else if (this.role === '2') {
+          localStorage.setItem('buildingId',JSON.stringify(result.data1.buildingId))
           return '/classInformation1/classInformation'
         }
 
@@ -71,9 +85,11 @@ const useUserStore = defineStore('User', {
         this.token = ''
         this.role = ''
         this.routes = []
+        // this.buildingId = ''
         localStorage.removeItem('TOKEN')
         localStorage.removeItem('role')
         localStorage.removeItem('routes')
+        localStorage.removeItem('buildingId')
         return 'ok'
       } else {
         return Promise.reject(new Error('登出失败'))
@@ -105,8 +121,10 @@ const useUserStore = defineStore('User', {
     },
     // 获取中级管理员信息
     async generalInformation() {
-      let result = await reqGeneralInformation()
-      console.log(result)
+      let result:any = await reqGeneralInformation()
+      // console.log(result)
+      this.buildingNum = result.data1.buildingNum
+      this.junAdmNum = result.data1.junAdmNum
     },
     // 获取初级管理员信息
     async juniorInformation() {

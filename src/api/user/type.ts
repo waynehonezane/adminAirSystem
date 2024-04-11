@@ -11,6 +11,10 @@ export interface loginRequestData {
 export interface data1 {
   level: number
   token: string
+  buildingId: number
+  nickname: string
+  campusId: number
+  adminId:number
 }
 
 export interface loginResponseData extends responseData {
