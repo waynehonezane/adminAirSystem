@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router'
 import { nextTick } from 'vue'
 
 const request = axios.create({
-  baseURL: 'http://47.120.4.5:8023',
+  baseURL: 'http://111.230.101.139:8023',
   timeout: 5000,
 })
 
